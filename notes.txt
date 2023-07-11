@@ -1,0 +1,16 @@
+Databases day 1 (10th july 2023)
+
+1. create table command
+2. insert table command
+3. select queries
+4. AS keyword
+5. UPPER(),LOWER()and CONCAT functions
+6. joins and GROUPBY()
+7. UPDATE and DELETE
+
+HOMEWORK
+
+1. design schema for follower management and User profile
+
+
+
