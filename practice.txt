@@ -1,0 +1,112 @@
+
+Self Practice Queries 11 july 2023
+
+/*create table weather(
+	city VARCHAR(80),
+	temp_lo INT,
+	temp_hi INT,
+	prcp REAL,
+	date_ DATE
+);*/
+
+c/*reate table cities(
+	name_ VARCHAR(80),
+	location VARCHAR(80)
+);*/
+
+/*insert into weather values (
+	'san francisco',
+	46,
+	50,
+	0.25,
+	'1994-11-27'
+); */
+
+--INSERT INTO cities VALUES ('San Francisco', '(-194.0, 53.0)');
+
+/*INSERT INTO weather (date_, city, temp_hi, temp_lo)
+VALUES ('1994-11-29', 'Hayward', 54, 37);*/
+
+/*INSERT INTO weather (city, temp_lo, temp_hi, prcp, date_)
+VALUES ('San Francisco', 43, 57, 0.0, '1994-11-29');*/
+
+--select * from weather;
+
+--select city, temp_lo, temp_hi, prcp, date_ from weather;
+
+--select city, (temp_hi + temp_lo)/2 as temp_avg, date_ from weather;
+
+--select * from weather where city = 'san francisco' and prcp > 0.0;
+
+--select * from weather order by city;
+
+
+Joins
+
+Thus far, our queries have only accessed one table at a time. Queries can access multiple tables at once,
+or access the same table in such a way that multiple rows of the table are being processed at the same
+time. Queries that access multiple tables (or multiple instances of the same table) at one time are called
+join queries. They combine rows from one table with rows from a second table, with an expression
+specifying which rows are to be paired.
+
+--SELECT * FROM weather JOIN cities ON city = name;
+
+--SELECT city, temp_lo, temp_hi, prcp, date_, location
+--FROM weather JOIN cities ON city = name_;
+
+
+
+Since the columns all had different names, the parser automatically found which table they belong
+to. If there were duplicate column names in the two tables you'd need to qualify the column names
+to show which one you meant, as in:
+
+
+
+SELECT weather.city, weather.temp_lo, weather.temp_hi,
+weather.prcp, weather.date, cities.location
+FROM weather JOIN cities ON weather.city = cities.name;
+
+
+Now we will figure out how we can get the Hayward records back in. What we want the query to do
+is to scan the weather table and for each row to find the matching cities row(s). If no matching
+row is found we want some “empty values” to be substituted for the cities table's columns. This
+kind of query is called an outer join. (The joins we have seen so far are inner joins.) The command
+looks like this:
+
+SELECT *
+FROM weather LEFT OUTER JOIN cities ON weather.city =
+cities.name;
+
+
+This query is called a left outer join because the table mentioned on the left of the join operator will
+have each of its rows in the output at least once, whereas the table on the right will only have those
+rows output that match some row of the left table. When outputting a left-table row for which there is
+no right-table match, empty (null) values are substituted for the right-table columns.
+
+
+Aggregate functions
+
+SELECT max(temp_lo) FROM weather;
+
+Sub Queries
+
+the aggregate functions cannot be used in the WHERE clause. (This restriction
+exists because the WHERE clause determines which rows will be included in the aggregate calculation;
+so obviously it has to be evaluated before aggregate functions are computed.) However, as is often the
+case the query can be restated to accomplish the desired result, here by using a subquery:
+
+SELECT city FROM weather
+WHERE temp_lo = (SELECT max(temp_lo) FROM weather);
+
+group by
+
+SELECT city, count(*), max(temp_lo)
+FROM weather
+GROUP BY city; 
+
+We can filter these grouped rows using HAVING:
+
+SELECT city, count(*), max(temp_lo)
+FROM weather
+GROUP BY city
+HAVING max(temp_lo) < 40;
